@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-api
+spec:
+  selector:
+    matchLabels:
+      app: todo-api
+      group: com.redhat.training.openshift.todoapi
+      provider: jkube
+  template:
+    metadata:
+      labels:
+        app: todo-api
+        group: com.redhat.training.openshift.todoapi
+        provider: jkube
+        version: 1.0.0-SNAPSHOT
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: DATABASE_USER
+          valueFrom:
+            configMapKeyRef:
+              key: DATABASE_USER
+              name: db-config
+        - name: DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: DATABASE_NAME
+              name: db-config
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: DATABASE_PASSWORD
+              name: db-config
+        - name: DATABASE_SVC_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: DATABASE_SVC_HOSTNAME
+              name: db-config
+        image: image-registry.openshift-image-registry.svc:5000/developer-todo-migrate/todo-api@sha256:680b088fb7ec669ab351ea4d8e2dfdc99bc21a090e6f6c3f16671fc093a76cdb
